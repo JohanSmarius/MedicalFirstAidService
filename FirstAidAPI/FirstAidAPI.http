@@ -1,0 +1,6 @@
+@FirstAidAPI_HostAddress = http://localhost:5085
+
+GET {{FirstAidAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
