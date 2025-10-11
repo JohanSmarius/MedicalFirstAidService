@@ -5,4 +5,5 @@
   <Project Path="DomainTests/DomainTests.csproj" />
   <Project Path="FirstAidAPI/FirstAidAPI.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
+  <Project Path="Staff/Staff.csproj" />
 </Solution>
