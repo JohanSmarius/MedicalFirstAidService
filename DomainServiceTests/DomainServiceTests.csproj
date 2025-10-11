@@ -32,9 +32,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\DomainService\DomainService.csproj" />
-  </ItemGroup>
-
 </Project>
