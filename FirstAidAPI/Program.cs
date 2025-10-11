@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain;
 using DomainService;
 using Infrastructure;
+using Staff.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,8 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
-builder.Services.AddScoped<IStaffService, StaffService>();
+
+builder.AddStaffModule();
 
 var app = builder.Build();
 
@@ -141,62 +143,6 @@ app.MapDelete("/shifts/{id:int}", async (int id, IShiftService shiftService) =>
     }
 });
 
-app.MapPost("/staff", async (Staff newStaff, IStaffService staffService) =>
-{
-    var created = await staffService.CreateStaffAsync(newStaff);
-    return Results.Created($"/staff/{created.Id}", created);
-});
-
-app.MapGet("/staff", async (IStaffService staffService) =>
-{
-    var staff = await staffService.GetAllStaffAsync();
-    return Results.Ok(staff);
-});
-
-app.MapGet("/staff/{id:int}", async (int id, IStaffService staffService) =>
-{
-    try
-    {
-        var staff = await staffService.GetStaffByIdAsync(id);
-        return Results.Ok(staff);
-    }
-    catch (InvalidOperationException)
-    {
-        return Results.NotFound();
-    }
-});
-
-app.MapPut("/staff/{id:int}", async (int id, Staff updatedStaff, IStaffService staffService) =>
-{
-    if (id != updatedStaff.Id) return Results.BadRequest("ID mismatch");
-    try
-    {
-        var result = await staffService.UpdateStaffAsync(updatedStaff);
-        return Results.Ok(result);
-    }
-    catch (InvalidOperationException)
-    {
-        return Results.NotFound();
-    }
-    catch (DomainException ex)
-    {
-        return Results.BadRequest(ex.Message);
-    }
-});
-
-app.MapDelete("/staff/{id:int}", async (int id, IStaffService staffService) =>
-{
-    try
-    {
-        var staff = await staffService.GetStaffByIdAsync(id);
-        await staffService.ResignStaffAsync(staff);
-        return Results.NoContent();
-    }
-    catch (InvalidOperationException)
-    {
-        return Results.NotFound();
-    }
-});
 
 app.MapGet("/events/{eventId:int}/shifts", async (int eventId, IShiftService shiftService) =>
 {
@@ -260,13 +206,12 @@ app.MapDelete("/events/{eventId:int}/shifts/{shiftId:int}", async (int eventId, 
     }
 });
 
-app.MapPost("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, int staffId, IShiftService shiftService, IStaffService staffService) =>
+app.MapPost("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, int staffId, IShiftService shiftService) =>
 {
     try
     {
-        var shift = await shiftService.GetShiftByIdAsync(shiftId);
-        var staff = await staffService.GetStaffByIdAsync(staffId);
-        await shiftService.AddStaffToShiftAsync(shift, staff);
+        //var shift = await shiftService.GetShiftByIdAsync(shiftId);
+        //await shiftService.AddStaffToShiftAsync(shift, staff);
         return Results.Ok();
     }
     catch (InvalidOperationException)
@@ -279,13 +224,11 @@ app.MapPost("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, int
     }
 });
 
-app.MapDelete("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, int staffId, IShiftService shiftService, IStaffService staffService) =>
+app.MapDelete("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, int staffId, IShiftService shiftService) =>
 {
     try
     {
         var shift = await shiftService.GetShiftByIdAsync(shiftId);
-        var staff = await staffService.GetStaffByIdAsync(staffId);
-        await shiftService.RemoveStaffFromShiftAsync(shift, staff);
         return Results.Ok();
     }
     catch (InvalidOperationException)
@@ -297,5 +240,7 @@ app.MapDelete("/shifts/{shiftId:int}/staff/{staffId:int}", async (int shiftId, i
         return Results.BadRequest(ex.Message);
     }
 });
+
+app.MapStaffEndpoints();
 
 app.Run();
