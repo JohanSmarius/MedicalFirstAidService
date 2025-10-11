@@ -2,4 +2,5 @@
   <Project Path="Event/Event.csproj" Id="b2178a91-ef7e-454a-9114-4b8c7621a468" />
   <Project Path="FirstAidAPI/FirstAidAPI.csproj" />
   <Project Path="Staff/Staff.csproj" />
+  <Project Path="StaffEvents/StaffEvents.csproj" Id="4ba9cfaa-cb65-4f27-9e66-f75d8625e7ce" />
 </Solution>

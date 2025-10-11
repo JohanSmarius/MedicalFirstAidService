@@ -110,9 +110,9 @@ POST {{FirstAidAPI_HostAddress}}/staff
 Content-Type: application/json
 
 {
-  "firstName": "John",
+  "firstName": "June",
   "lastName": "Doe",
-  "email": "john.doe@example.com",
+  "email": "june.doe@example.com",
   "phone": "+1234567890",
   "role": "FirstAider",
   "certificationLevel": "Basic",
