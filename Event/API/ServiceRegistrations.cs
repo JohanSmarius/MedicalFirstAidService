@@ -31,6 +31,7 @@ namespace Event.API
             builder.Services.AddScoped<ds.IShiftService, ds.ShiftService>();
             builder.Services.AddScoped<api.IShiftService, api.ShiftService>();
             builder.Services.AddScoped<api.IStaffService, api.StaffService>();
+            builder.Services.AddScoped<ds.IStaffService, ds.StaffService>();
 
             return builder;
         }

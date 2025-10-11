@@ -110,9 +110,9 @@ POST {{FirstAidAPI_HostAddress}}/staff
 Content-Type: application/json
 
 {
-  "firstName": "June",
+  "firstName": "Iris",
   "lastName": "Doe",
-  "email": "june.doe@example.com",
+  "email": "iris.doe@example.com",
   "phone": "+1234567890",
   "role": "FirstAider",
   "certificationLevel": "Basic",
@@ -129,7 +129,7 @@ Content-Type: application/json
   "id": 1,
   "firstName": "John",
   "lastName": "Smith",
-  "email": "john.smith@example.com",
+  "email": "will.smith@example.com",
   "phone": "+1234567890",
   "role": "FirstAider",
   "certificationLevel": "Advanced",
@@ -139,7 +139,7 @@ Content-Type: application/json
 ###
 
 # Resign a staff member
-DELETE {{FirstAidAPI_HostAddress}}/staff/1
+DELETE {{FirstAidAPI_HostAddress}}/staff/4
 
 ###
 

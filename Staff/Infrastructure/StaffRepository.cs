@@ -17,7 +17,7 @@ internal class StaffRepository(StaffDbContext context) : IStaffRepository
 
     public async Task<Domain.Staff?> GetStaffByIdAsync(int id)
     {
-        return await context.Staff
+        return await context.Staff.AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 

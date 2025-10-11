@@ -68,4 +68,9 @@ internal class StaffRepository : IStaffRepository
             .Where(s => s.Role == role && s.IsActive)
             .ToListAsync();
     }
+
+    public async Task<Staff> GetStaffByReferenceId(int referenceId)
+    {
+        return await _context.Staff.SingleAsync(s => s.ReferenceId == referenceId);    
+    }
 }

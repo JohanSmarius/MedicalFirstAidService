@@ -14,4 +14,6 @@ internal interface IStaffRepository
     Task DeleteStaffAsync(int id);
     Task<List<Staff>> GetActiveStaffAsync();
     Task<List<Staff>> GetStaffByRoleAsync(StaffRole role);
+
+    Task<Staff> GetStaffByReferenceId(int referenceId);
 }

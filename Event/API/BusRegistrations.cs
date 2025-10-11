@@ -11,6 +11,7 @@ namespace Event.API
         public static IBusRegistrationConfigurator AddEventListeners(this IBusRegistrationConfigurator config)
         {
             config.AddConsumer<StaffCreatedEventListener>();
+            config.AddConsumer<StaffResignedEventListener>();
             return config;
         }
     }
