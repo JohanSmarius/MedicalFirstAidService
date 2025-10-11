@@ -3,6 +3,7 @@
   <Project Path="DomainService/DomainService.csproj" />
   <Project Path="DomainServiceTests/DomainServiceTests.csproj" />
   <Project Path="DomainTests/DomainTests.csproj" />
+  <Project Path="Event/Event.csproj" Id="b2178a91-ef7e-454a-9114-4b8c7621a468" />
   <Project Path="FirstAidAPI/FirstAidAPI.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
   <Project Path="Staff/Staff.csproj" />
