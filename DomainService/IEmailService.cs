@@ -34,6 +34,12 @@ public interface IEmailService
     Task SendEventInvoiceNotificationAsync(Event @event);
     
     /// <summary>
+    /// Sends an event cancellation notification email to the contact person
+    /// </summary>
+    /// <param name="event">The event being cancelled</param>
+    Task SendEventCancellationNotificationAsync(Event @event);
+    
+    /// <summary>
     /// Sends a general email
     /// </summary>
     /// <param name="to">Recipient email address</param>

@@ -7,16 +7,19 @@ public class EventService : IEventService
 {
     private readonly IEventRepository _repository;
     private readonly IEmailService _emailService;
+    private readonly IStaffAssignmentRepository _assignmentRepository;
     private readonly ILogger<EventService> _logger;
     private readonly EventChangeHandler _domainService = new();
         
     public EventService(
         IEventRepository repository,
         IEmailService emailService,
+        IStaffAssignmentRepository assignmentRepository,
         ILogger<EventService> logger)
     {
         _repository = repository;
         _emailService = emailService;
+        _assignmentRepository = assignmentRepository;
         _logger = logger;
     }
 
@@ -119,5 +122,73 @@ public class EventService : IEventService
         // Persist final state
         await _repository.UpdateEventAsync(existing);
         return existing;
+    }
+
+    public async Task<Event> GetEventByIdAsync(int id)
+    {
+        return await _repository.GetEventByIdAsync(id) ??
+            throw new InvalidOperationException($"Event {id} not found");
+    }
+
+    public async Task<List<Event>> GetAllEventsAsync()
+    {
+        return await _repository.GetAllEventsAsync();
+    }
+
+    public async Task CancelEventAsync(Event eventToCancel)
+    {
+        if (eventToCancel == null)
+        {
+            throw new ArgumentNullException(nameof(eventToCancel));
+        }
+
+        // Load the existing event with shifts and assignments
+        var existing = await _repository.GetEventByIdAsync(eventToCancel.Id) ??
+            throw new InvalidOperationException($"Event {eventToCancel.Id} not found");
+
+        if (existing.Status == EventStatus.Cancelled)
+        {
+            _logger.LogWarning("Event {EventId} is already cancelled.", existing.Id);
+            return;
+        }
+
+        // Cancel the event
+        existing.Status = EventStatus.Cancelled;
+        existing.UpdatedAt = DateTime.UtcNow;
+
+        // Cancel all shifts
+        foreach (var shift in existing.Shifts)
+        {
+            shift.Status = ShiftStatus.Cancelled;
+            shift.UpdatedAt = DateTime.UtcNow;
+
+            // Cancel all assignments for this shift
+            foreach (var assignment in shift.StaffAssignments)
+            {
+                if (assignment.Status == AssignmentStatus.Assigned || assignment.Status == AssignmentStatus.Confirmed)
+                {
+                    assignment.Status = AssignmentStatus.Cancelled;
+                    assignment.UpdatedAt = DateTime.UtcNow;
+                    await _assignmentRepository.UpdateAssignmentAsync(assignment);
+                    _logger.LogInformation("Cancelled assignment {AssignmentId} for cancelled event {EventId}", assignment.Id, existing.Id);
+                }
+            }
+        }
+
+        // Persist the event (shifts should be updated via cascade or explicit)
+        await _repository.UpdateEventAsync(existing);
+
+        // Send cancellation notification
+        try
+        {
+            await _emailService.SendEventCancellationNotificationAsync(existing);
+            _logger.LogInformation("Cancellation notification sent for Event {EventId}", existing.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed sending cancellation notification for Event {EventId}", existing.Id);
+        }
+
+        _logger.LogInformation("Event {EventId} has been cancelled.", existing.Id);
     }
 }

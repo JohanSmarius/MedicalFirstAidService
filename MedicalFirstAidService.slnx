@@ -1,6 +1,8 @@
 <Solution>
   <Project Path="Domain/Domain.csproj" />
   <Project Path="DomainService/DomainService.csproj" />
+  <Project Path="DomainServiceTests/DomainServiceTests.csproj" />
+  <Project Path="DomainTests/DomainTests.csproj" />
   <Project Path="FirstAidAPI/FirstAidAPI.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
 </Solution>
