@@ -50,7 +50,6 @@ public class Staff
 /// <summary>
 /// Role of a staff member
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum StaffRole
 {
     FirstAider,
