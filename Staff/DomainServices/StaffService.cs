@@ -42,7 +42,7 @@ internal class StaffService : IStaffService
         staff.UpdatedAt = DateTime.UtcNow;
         await _staffRepository.UpdateStaffAsync(staff);
 
-        //TODO: How to fix this?
+       
         var message = new StaffResignedEvent() { Id = staff.Id };
         await _bus.Publish(message);
 
