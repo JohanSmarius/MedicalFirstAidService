@@ -112,7 +112,7 @@ Content-Type: application/json
 {
   "firstName": "Iris",
   "lastName": "Doe",
-  "email": "iris.doe@example.com",
+  "email": "iris.john@example.com",
   "phone": "+1234567890",
   "role": "FirstAider",
   "certificationLevel": "Basic",
@@ -191,7 +191,7 @@ DELETE {{FirstAidAPI_HostAddress}}/events/1/shifts/1
 ###
 
 # Add staff to a shift
-POST {{FirstAidAPI_HostAddress}}/shifts/1/staff/1
+POST {{FirstAidAPI_HostAddress}}/shifts/1/staff/4
 
 ###
 
