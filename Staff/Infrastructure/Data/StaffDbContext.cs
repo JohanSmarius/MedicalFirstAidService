@@ -3,7 +3,7 @@ using domain = Staff.Domain;
 
 namespace Infrastructure.Data;
 
-public class StaffDbContext(DbContextOptions<StaffDbContext> options) 
+internal class StaffDbContext(DbContextOptions<StaffDbContext> options) 
     : DbContext(options)
 {
     public DbSet<domain.Staff> Staff { get; set; } = null!;

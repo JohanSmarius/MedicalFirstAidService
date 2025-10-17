@@ -6,7 +6,7 @@ namespace Staff.Domain;
 /// <summary>
 /// Represents a staff member
 /// </summary>
-public class Staff
+internal class Staff
 {
     public int Id { get; set; }
 
