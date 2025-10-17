@@ -65,28 +65,44 @@ internal class EventService : IEventService
         }
 
         // Check if date changes affect existing shifts
-        if (updated.Shifts.Any() &&
-            (updated.StartDate != updated.StartDate || updated.EndDate != updated.EndDate))
+        if (updated.Shifts.Any())
         {
-            var conflictingShifts = updated.Shifts.Where(s =>
-                s.StartTime < updated.StartDate || s.EndTime > updated.EndDate).ToList();
-
-            if (conflictingShifts.Any())
+            // Load current state to compare with updated dates
+            var existing = await _repository.GetEventByIdAsync(updated.Id) ??
+                throw new InvalidOperationException($"Event {updated.Id} not found");
+                
+            // Only check for conflicts if dates have changed
+            if (updated.StartDate != existing.StartDate || updated.EndDate != existing.EndDate)
             {
-                throw new DomainException($"Cannot change event dates. {conflictingShifts.Count} shift(s) would fall outside the new event timeframe.");
+                var conflictingShifts = updated.Shifts.Where(s =>
+                    s.StartTime < updated.StartDate || s.EndTime > updated.EndDate).ToList();
+
+                if (conflictingShifts.Any())
+                {
+                    throw new DomainException($"Cannot change event dates. {conflictingShifts.Count} shift(s) would fall outside the new event timeframe.");
+                }
             }
+
+            // Apply domain logic
+            var decision = _domainService.ApplyChanges(existing, updated);
+
+            // Persist final state
+            await _repository.UpdateEventAsync(existing);
+            return existing;
         }
+        else
+        {
+            // Load current state
+            var existing = await _repository.GetEventByIdAsync(updated.Id) ??
+                throw new InvalidOperationException($"Event {updated.Id} not found");
 
-        // Load current state
-        var existing = await _repository.GetEventByIdAsync(updated.Id) ??
-            throw new InvalidOperationException($"Event {updated.Id} not found");
+            // Apply domain logic
+            var decision = _domainService.ApplyChanges(existing, updated);
 
-        // Apply domain logic
-        var decision = _domainService.ApplyChanges(existing, updated);
-
-        // Persist final state
-        await _repository.UpdateEventAsync(existing);
-        return existing;
+            // Persist final state
+            await _repository.UpdateEventAsync(existing);
+            return existing;
+        }
     }
 
     public async Task<domain.Event> GetEventByIdAsync(int id)
